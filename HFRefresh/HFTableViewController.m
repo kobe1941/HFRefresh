@@ -1,29 +1,31 @@
 //
-//  ViewController.m
+//  HFTableViewController.m
 //  HFRefresh
 //
-//  Created by 胡峰 on 16/9/11.
+//  Created by 胡峰 on 16/9/16.
 //  Copyright © 2016年 胡峰. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "UIScrollView+HFRefreshPullDown.h"
 #import "HFTableViewController.h"
-#import "HFCollectionViewController.h"
+#import "UIScrollView+HFRefreshPullDown.h"
 
 
-@interface ViewController ()<UITableViewDataSource, UITableViewDelegate>
+@interface HFTableViewController ()<UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 
 @end
 
-@implementation ViewController
+@implementation HFTableViewController
+
+- (void)dealloc
+{
+    [self.tableView resetPullToRefresh];
+    NSLog(@"dealloc----->>>>> %@", NSStringFromClass([self class]));
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    
     [self.view addSubview:self.tableView];
     
     self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
@@ -36,10 +38,7 @@
             [weakSelf.tableView stopToFresh];
         });
     }];
-    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.tableView triggleToReFresh];
-//    });
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -70,7 +69,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 8;
+    return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -81,14 +80,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
     }
     
-    NSString *text = @"";
-    if (indexPath.row <= 3) {
-        text = @"tableView test refresh";
-    } else {
-        text = @"collectionView test refresh";
-    }
-    
-    cell.textLabel.text = text;//[NSString stringWithFormat:@"%ld-%ld", (long)indexPath.section, (long)indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld-%ld", (long)indexPath.section, (long)indexPath.row];
     
     return cell;
 }
@@ -102,14 +94,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    if (indexPath.row <= 3) {
-        HFTableViewController *vc = [[HFTableViewController alloc] init];
-        [self.navigationController pushViewController:vc animated:YES];
-    } else {
-        HFCollectionViewController *vc = [[HFCollectionViewController alloc] init];
-        [self.navigationController pushViewController:vc animated:YES];
-    }
+    
     
 }
+
 
 @end

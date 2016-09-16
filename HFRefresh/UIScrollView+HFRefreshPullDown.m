@@ -10,10 +10,6 @@
 #import "HFRefreshHeader.h"
 #import <objc/runtime.h>
 
-
-
-
-
 static const NSString *HFRefreshHeaderString;
 static const NSString *HFRefreshHandlerString;
 
@@ -56,22 +52,26 @@ static const NSString *HFRefreshHandlerString;
 #pragma mark - 对外提供的方法
 - (void)addPullDownToRefreshWithHandler:(HFRefreshBLock)refreshBlock
 {
-    HFRefreshHeader *header = [[HFRefreshHeader alloc] initWithFrame:CGRectMake(0, -HFRefreshHeaderHeight, self.bounds.size.width, HFRefreshHeaderHeight)];
+    self.handlerBLock = refreshBlock;
     
+    HFRefreshHeader *header = [[HFRefreshHeader alloc] initWithFrame:CGRectMake(0, -HFRefreshHeaderHeight, self.bounds.size.width, HFRefreshHeaderHeight)];
     header.scrollView = self;
+
     [self addSubview:header];
     [self bringSubviewToFront:header];
     self.refreshHeader = header;
-
-    
-    
-    self.handlerBLock = refreshBlock;
+    __weak typeof(self) weakSelf = self;
+    [header setRefreshEventBlock:^{
+        if (weakSelf.handlerBLock) {
+            weakSelf.handlerBLock();
+        }
+    }];
 }
 
 - (void)triggleToReFresh
 {
     // +1是为了触发刷新机制
-    [self setContentOffset:CGPointMake(0, HFRefreshHeaderHeight+1) animated:YES];
+    [self.refreshHeader triggleToReFresh];
 }
 
 - (void)stopToFresh
@@ -79,7 +79,10 @@ static const NSString *HFRefreshHandlerString;
     [self.refreshHeader setRefreshStatus:HFRefreshNormal];
 }
 
-
+- (void)resetPullToRefresh
+{
+    self.refreshHeader.scrollView = nil;
+}
 
 - (void)handleRefreshBlock
 {

@@ -17,6 +17,8 @@
 		4F8F69C81D84E85C0084B5C2 /* HFRefreshUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69C71D84E85C0084B5C2 /* HFRefreshUITests.m */; };
 		4F8F69DD1D84F4080084B5C2 /* HFRefreshHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69DC1D84F4080084B5C2 /* HFRefreshHeader.m */; };
 		4F8F69E01D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69DF1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m */; };
+		4FD5C5031D8BE429004DD1C6 /* HFTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD5C5021D8BE429004DD1C6 /* HFTableViewController.m */; };
+		4FD5C5061D8BE43B004DD1C6 /* HFCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FD5C5051D8BE43B004DD1C6 /* HFCollectionViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,10 @@
 		4F8F69DC1D84F4080084B5C2 /* HFRefreshHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFRefreshHeader.m; sourceTree = "<group>"; };
 		4F8F69DE1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+HFRefreshPullDown.h"; sourceTree = "<group>"; };
 		4F8F69DF1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+HFRefreshPullDown.m"; sourceTree = "<group>"; };
+		4FD5C5011D8BE429004DD1C6 /* HFTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFTableViewController.h; sourceTree = "<group>"; };
+		4FD5C5021D8BE429004DD1C6 /* HFTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFTableViewController.m; sourceTree = "<group>"; };
+		4FD5C5041D8BE43B004DD1C6 /* HFCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFCollectionViewController.h; sourceTree = "<group>"; };
+		4FD5C5051D8BE43B004DD1C6 /* HFCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFCollectionViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +113,7 @@
 		4F8F69A11D84E85B0084B5C2 /* HFRefresh */ = {
 			isa = PBXGroup;
 			children = (
+				4FD5C5001D8BDEC5004DD1C6 /* refresh */,
 				4F8F69A51D84E85B0084B5C2 /* AppDelegate.h */,
 				4F8F69A61D84E85B0084B5C2 /* AppDelegate.m */,
 				4F8F69A81D84E85B0084B5C2 /* ViewController.h */,
@@ -116,10 +123,10 @@
 				4F8F69B01D84E85B0084B5C2 /* LaunchScreen.storyboard */,
 				4F8F69B31D84E85B0084B5C2 /* Info.plist */,
 				4F8F69A21D84E85B0084B5C2 /* Supporting Files */,
-				4F8F69DB1D84F4080084B5C2 /* HFRefreshHeader.h */,
-				4F8F69DC1D84F4080084B5C2 /* HFRefreshHeader.m */,
-				4F8F69DE1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.h */,
-				4F8F69DF1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m */,
+				4FD5C5011D8BE429004DD1C6 /* HFTableViewController.h */,
+				4FD5C5021D8BE429004DD1C6 /* HFTableViewController.m */,
+				4FD5C5041D8BE43B004DD1C6 /* HFCollectionViewController.h */,
+				4FD5C5051D8BE43B004DD1C6 /* HFCollectionViewController.m */,
 			);
 			path = HFRefresh;
 			sourceTree = "<group>";
@@ -148,6 +155,17 @@
 				4F8F69C91D84E85C0084B5C2 /* Info.plist */,
 			);
 			path = HFRefreshUITests;
+			sourceTree = "<group>";
+		};
+		4FD5C5001D8BDEC5004DD1C6 /* refresh */ = {
+			isa = PBXGroup;
+			children = (
+				4F8F69DB1D84F4080084B5C2 /* HFRefreshHeader.h */,
+				4F8F69DC1D84F4080084B5C2 /* HFRefreshHeader.m */,
+				4F8F69DE1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.h */,
+				4F8F69DF1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m */,
+			);
+			name = refresh;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,6 +299,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F8F69AA1D84E85B0084B5C2 /* ViewController.m in Sources */,
+				4FD5C5061D8BE43B004DD1C6 /* HFCollectionViewController.m in Sources */,
+				4FD5C5031D8BE429004DD1C6 /* HFTableViewController.m in Sources */,
 				4F8F69E01D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m in Sources */,
 				4F8F69A71D84E85B0084B5C2 /* AppDelegate.m in Sources */,
 				4F8F69DD1D84F4080084B5C2 /* HFRefreshHeader.m in Sources */,
@@ -508,6 +528,7 @@
 				4F8F69CE1D84E85C0084B5C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4F8F69CF1D84E85C0084B5C2 /* Build configuration list for PBXNativeTarget "HFRefreshTests" */ = {
 			isa = XCConfigurationList;
@@ -516,6 +537,7 @@
 				4F8F69D11D84E85C0084B5C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4F8F69D21D84E85C0084B5C2 /* Build configuration list for PBXNativeTarget "HFRefreshUITests" */ = {
 			isa = XCConfigurationList;
@@ -524,6 +546,7 @@
 				4F8F69D41D84E85C0084B5C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

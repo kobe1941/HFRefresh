@@ -7,7 +7,6 @@
 //
 
 #import "HFRefreshHeader.h"
-#import "UIScrollView+HFRefreshPullDown.h"
 
 const CGFloat HFRefreshHeaderHeight = 60;
 
@@ -21,7 +20,9 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
 
 @property (nonatomic, assign) HFRefreshStatus refreshStatus;
 
-@property (nonatomic, assign) CGFloat originOffset; // scrollView最初的偏移量
+@property (nonatomic, assign) CGFloat originInsetTop; // scrollView最初的偏移量
+
+@property (nonatomic, copy) RefreshEventBlock refreshBLock;
 
 @end
 
@@ -47,15 +48,24 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
 - (void)setupUI
 {
     [self addSubview:self.arrowImage];
-    
     [self addSubview:self.refreshIndicator];
-    
     [self addSubview:self.textLabel];
     
-    self.arrowImage.center = CGPointMake(30, 30);
-    self.refreshIndicator.center = self.arrowImage.center;
-    self.textLabel.frame = CGRectMake(CGRectGetMaxX(self.arrowImage.frame), CGRectGetMinY(self.arrowImage.frame), 160, 20);
-    self.textLabel.center = CGPointMake(self.textLabel.center.x, self.arrowImage.center.y);
+    self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.textLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.textLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.textLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:160]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.textLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:24]];
+    
+    self.arrowImage.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.arrowImage attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.textLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.arrowImage attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1 constant:60]];
+    
+    self.refreshIndicator.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.refreshIndicator attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.refreshIndicator attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    
+    [self setRefreshStatus:HFRefreshNormal];
 }
 
 #pragma mark - getter && setter
@@ -89,11 +99,13 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
 - (void)setScrollView:(UIScrollView *)scrollView
 {
     if (_scrollView) {
-        [self removeObserver:_scrollView forKeyPath:@"contentOffset"];
+        [_scrollView removeObserver:self forKeyPath:@"contentOffset"];
     }
     
     if (scrollView) {
         [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+        // 保存scrolView最初的inset
+        self.originInsetTop = scrollView.contentInset.top;
     }
     _scrollView = scrollView;
 }
@@ -109,12 +121,12 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
             self.arrowImage.hidden = NO;
             // 箭头翻转动画
             [UIView animateWithDuration:0.2 animations:^{
-                self.arrowImage.transform = CGAffineTransformIdentity;
+                self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI*2);
             }];
             
             self.textLabel.text = @"下拉可刷新";
             UIEdgeInsets insets = self.scrollView.contentInset;
-            insets.top = 0;
+            insets.top = self.originInsetTop;
             [UIView animateWithDuration:0.2 animations:^{
                 self.scrollView.contentInset = insets;
             }];
@@ -136,16 +148,38 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
             self.refreshIndicator.hidden = NO;
             [self.refreshIndicator startAnimating];
             self.arrowImage.hidden = YES;
-            
+            self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI*2);
             self.textLabel.text = @"加载中...";
+            
             UIEdgeInsets insets = self.scrollView.contentInset;
-            insets.top = HFTriggleThrold;
+            insets.top = HFTriggleThrold + self.originInsetTop;
             self.scrollView.contentInset = insets;
             // 触发下拉刷新的网络请求
-            [self.scrollView handleRefreshBlock];
+            if (self.refreshBLock) {
+                self.refreshBLock();
+            }
             break;
         }
     }
+}
+
+- (void)setRefreshEventBlock:(RefreshEventBlock)refreshblock
+{
+    self.refreshBLock = refreshblock;
+}
+
+// 模拟用户手势触发刷新
+- (void)triggleToReFresh
+{
+    UIEdgeInsets insets = self.scrollView.contentInset;
+    insets.top = self.originInsetTop + HFRefreshHeaderHeight + 1;
+    UIEdgeInsets finalInsets = insets;
+    finalInsets.top -= 1;
+    [UIView animateWithDuration:0.2 animations:^{
+        self.scrollView.contentInset = insets;
+    } completion:^(BOOL finished) {
+        self.scrollView.contentInset = finalInsets;
+    }];
 }
 
 
@@ -169,10 +203,13 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
     // 否则根据offset来判断会有误差
     if (self.refreshStatus == HFRefreshTriggle && !self.scrollView.isDragging) {
         [self setRefreshStatus:HFRefreshLoading];
-    } else if (self.refreshStatus == HFRefreshNormal && offset <= -HFRefreshHeaderHeight) {
+    } else if ((self.refreshStatus == HFRefreshNormal) && (offset <= -(HFRefreshHeaderHeight+self.originInsetTop))) {
         [self  setRefreshStatus:HFRefreshTriggle];
-    } else if (self.refreshStatus != HFRefreshNormal && offset > -HFRefreshHeaderHeight) {
-        [self setRefreshStatus:HFRefreshNormal];
+    } else if ((self.refreshStatus != HFRefreshNormal) && (offset > -(HFRefreshHeaderHeight+self.originInsetTop))) {
+        if (self.refreshStatus != HFRefreshLoading) { // 排除掉正在刷新时，手势往上滑取消刷新动画的情况
+            [self setRefreshStatus:HFRefreshNormal];
+        }
+        
     }
     
 }

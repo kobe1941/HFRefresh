@@ -21,10 +21,8 @@ typedef void(^HFRefreshBLock)(void);
 // 停止刷新
 - (void)stopToFresh;
 
+// 用于取消KVO的监听，防止页面返回后造成崩溃
+- (void)resetPullToRefresh;
 
-// private method
-
-// 触发刷新的阈值
-- (void)handleRefreshBlock;
 
 @end
