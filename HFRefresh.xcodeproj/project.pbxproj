@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F064A7E1D8CE5DE00A3B318 /* HFRefreshFootor.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F064A7D1D8CE5DE00A3B318 /* HFRefreshFootor.m */; };
+		4F064A811D8CE60300A3B318 /* UIScrollView+HFRefreshLoadMore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F064A801D8CE60300A3B318 /* UIScrollView+HFRefreshLoadMore.m */; };
 		4F8F69A41D84E85B0084B5C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69A31D84E85B0084B5C2 /* main.m */; };
 		4F8F69A71D84E85B0084B5C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69A61D84E85B0084B5C2 /* AppDelegate.m */; };
 		4F8F69AA1D84E85B0084B5C2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69A91D84E85B0084B5C2 /* ViewController.m */; };
@@ -39,6 +41,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4F064A7C1D8CE5DE00A3B318 /* HFRefreshFootor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HFRefreshFootor.h; sourceTree = "<group>"; };
+		4F064A7D1D8CE5DE00A3B318 /* HFRefreshFootor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HFRefreshFootor.m; sourceTree = "<group>"; };
+		4F064A7F1D8CE60300A3B318 /* UIScrollView+HFRefreshLoadMore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+HFRefreshLoadMore.h"; sourceTree = "<group>"; };
+		4F064A801D8CE60300A3B318 /* UIScrollView+HFRefreshLoadMore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+HFRefreshLoadMore.m"; sourceTree = "<group>"; };
 		4F8F699F1D84E85B0084B5C2 /* HFRefresh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HFRefresh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F8F69A31D84E85B0084B5C2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4F8F69A51D84E85B0084B5C2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -164,6 +170,10 @@
 				4F8F69DC1D84F4080084B5C2 /* HFRefreshHeader.m */,
 				4F8F69DE1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.h */,
 				4F8F69DF1D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m */,
+				4F064A7C1D8CE5DE00A3B318 /* HFRefreshFootor.h */,
+				4F064A7D1D8CE5DE00A3B318 /* HFRefreshFootor.m */,
+				4F064A7F1D8CE60300A3B318 /* UIScrollView+HFRefreshLoadMore.h */,
+				4F064A801D8CE60300A3B318 /* UIScrollView+HFRefreshLoadMore.m */,
 			);
 			name = refresh;
 			sourceTree = "<group>";
@@ -300,10 +310,12 @@
 			files = (
 				4F8F69AA1D84E85B0084B5C2 /* ViewController.m in Sources */,
 				4FD5C5061D8BE43B004DD1C6 /* HFCollectionViewController.m in Sources */,
+				4F064A7E1D8CE5DE00A3B318 /* HFRefreshFootor.m in Sources */,
 				4FD5C5031D8BE429004DD1C6 /* HFTableViewController.m in Sources */,
 				4F8F69E01D84F4600084B5C2 /* UIScrollView+HFRefreshPullDown.m in Sources */,
 				4F8F69A71D84E85B0084B5C2 /* AppDelegate.m in Sources */,
 				4F8F69DD1D84F4080084B5C2 /* HFRefreshHeader.m in Sources */,
+				4F064A811D8CE60300A3B318 /* UIScrollView+HFRefreshLoadMore.m in Sources */,
 				4F8F69A41D84E85B0084B5C2 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

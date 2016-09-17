@@ -84,10 +84,10 @@ static const NSString *HFRefreshHandlerString;
     self.refreshHeader.scrollView = nil;
 }
 
-- (void)handleRefreshBlock
-{
-    if (self.handlerBLock) {
-        self.handlerBLock();
-    }
-}
+//- (void)handleRefreshBlock
+//{
+//    if (self.handlerBLock) {
+//        self.handlerBLock();
+//    }
+//}
 @end

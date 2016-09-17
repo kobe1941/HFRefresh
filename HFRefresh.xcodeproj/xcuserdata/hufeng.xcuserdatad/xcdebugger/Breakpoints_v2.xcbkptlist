@@ -6,96 +6,80 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HFRefresh/HFTableViewController.m"
-            timestampString = "495708469.246688"
+            filePath = "HFRefresh/HFRefreshFootor.m"
+            timestampString = "495817741.5587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "-dealloc"
+            startingLineNumber = "240"
+            endingLineNumber = "240"
+            landmarkName = "-adjustRefreshStatusWithOffset:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HFRefresh/HFCollectionViewController.m"
-            timestampString = "495712507.458214"
+            filePath = "HFRefresh/HFRefreshFootor.m"
+            timestampString = "495817741.5587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "-adjustRefreshStatusWithOffset:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HFRefresh/HFCollectionViewController.m"
-            timestampString = "495712507.458214"
+            filePath = "HFRefresh/HFRefreshFootor.m"
+            timestampString = "495817741.5587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
-            landmarkName = "-viewDidLoad"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
+            landmarkName = "-adjustRefreshStatusWithOffset:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HFRefresh/HFCollectionViewController.m"
-            timestampString = "495712507.458214"
+            filePath = "HFRefresh/HFRefreshFootor.m"
+            timestampString = "495817741.5587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "-numberOfSectionsInCollectionView:"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
+            landmarkName = "-adjustRefreshStatusWithOffset:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HFRefresh/HFCollectionViewController.m"
-            timestampString = "495712507.458214"
+            filePath = "HFRefresh/HFRefreshFootor.m"
+            timestampString = "495817741.5587"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
-            landmarkName = "-collectionView:numberOfItemsInSection:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HFRefresh/HFCollectionViewController.m"
-            timestampString = "495712507.458214"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
-            landmarkName = "-collectionView:cellForItemAtIndexPath:"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
+            landmarkName = "-adjustRefreshStatusWithOffset:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

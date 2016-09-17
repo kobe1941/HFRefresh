@@ -8,6 +8,7 @@
 
 #import "HFCollectionViewController.h"
 #import "UIScrollView+HFRefreshPullDown.h"
+#import "UIScrollView+HFRefreshLoadMore.h"
 
 static NSString *cellID = @"cellID";
 
@@ -22,6 +23,7 @@ static NSString *cellID = @"cellID";
 - (void)dealloc
 {
     [self.collectionView resetPullToRefresh];
+    [self.collectionView resetLoadMoreForNextPage];
     NSLog(@"dealloc----->>>>> %@", NSStringFromClass([self class]));
 }
 
@@ -33,14 +35,22 @@ static NSString *cellID = @"cellID";
 //    [self.collectionView reloadData];
     self.collectionView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
     __weak typeof(self) weakSelf = self;
-    [self.collectionView addPullDownToRefreshWithHandler:^{
-        NSLog(@"开始下拉刷新啦--------------");
+//    [self.collectionView addPullDownToRefreshWithHandler:^{
+//        NSLog(@"开始下拉刷新啦--------------");
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            NSLog(@"下拉刷新完成------------");
+//            [weakSelf.collectionView stopToFresh];
+//        });
+//    }];
+
+    
+    [self.collectionView addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSLog(@"下拉刷新完成------------");
-            [weakSelf.collectionView stopToFresh];
+            [weakSelf.collectionView stopToLoadMore];
+            NSLog(@"上拉加载更多完成---------");
         });
     }];
-
 }
 
 - (void)didReceiveMemoryWarning {

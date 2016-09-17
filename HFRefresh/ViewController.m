@@ -10,7 +10,7 @@
 #import "UIScrollView+HFRefreshPullDown.h"
 #import "HFTableViewController.h"
 #import "HFCollectionViewController.h"
-
+#import "UIScrollView+HFRefreshLoadMore.h"
 
 @interface ViewController ()<UITableViewDataSource, UITableViewDelegate>
 
@@ -26,20 +26,30 @@
     
     [self.view addSubview:self.tableView];
     
-    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+//    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
     
     __weak typeof(self) weakSelf = self;
-    [self.tableView addPullDownToRefreshWithHandler:^{
-        NSLog(@"开始下拉刷新啦--------------");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSLog(@"下拉刷新完成------------");
-            [weakSelf.tableView stopToFresh];
-        });
-    }];
+//    [self.tableView addPullDownToRefreshWithHandler:^{
+//        NSLog(@"开始下拉刷新啦--------------");
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            NSLog(@"下拉刷新完成------------");
+//            [weakSelf.tableView stopToFresh];
+//        });
+//    }];
+    
     
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        [self.tableView triggleToReFresh];
 //    });
+    
+    
+    [self.tableView addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf.tableView stopToLoadMore];
+            NSLog(@"上拉加载更多完成---------");
+        });
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -70,7 +80,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 8;
+    return 18;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

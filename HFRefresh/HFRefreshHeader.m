@@ -10,7 +10,7 @@
 
 const CGFloat HFRefreshHeaderHeight = 60;
 
-const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
+const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 
 @interface HFRefreshHeader ()
 
@@ -30,7 +30,7 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
 
 - (void)dealloc
 {
-    [self setScrollView:nil]; // 必须置空
+//    [self setScrollView:nil]; // 必须置空
     NSLog(@"dealloc-------->>>>> %@", NSStringFromClass([self class]));
 }
 
@@ -103,7 +103,7 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
     }
     
     if (scrollView) {
-        [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+        [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
         // 保存scrolView最初的inset
         self.originInsetTop = scrollView.contentInset.top;
     }
@@ -152,7 +152,7 @@ const CGFloat HFTriggleThrold = HFRefreshHeaderHeight;
             self.textLabel.text = @"加载中...";
             
             UIEdgeInsets insets = self.scrollView.contentInset;
-            insets.top = HFTriggleThrold + self.originInsetTop;
+            insets.top = HFTriggleHeaderThrold + self.originInsetTop;
             self.scrollView.contentInset = insets;
             // 触发下拉刷新的网络请求
             if (self.refreshBLock) {

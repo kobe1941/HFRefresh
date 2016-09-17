@@ -8,7 +8,7 @@
 
 #import "HFTableViewController.h"
 #import "UIScrollView+HFRefreshPullDown.h"
-
+#import "UIScrollView+HFRefreshLoadMore.h"
 
 @interface HFTableViewController ()<UITableViewDataSource, UITableViewDelegate>
 
@@ -21,6 +21,7 @@
 - (void)dealloc
 {
     [self.tableView resetPullToRefresh];
+    [self.tableView resetLoadMoreForNextPage];
     NSLog(@"dealloc----->>>>> %@", NSStringFromClass([self class]));
 }
 
@@ -28,7 +29,7 @@
     [super viewDidLoad];
     [self.view addSubview:self.tableView];
     
-    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+//    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
     
     __weak typeof(self) weakSelf = self;
     [self.tableView addPullDownToRefreshWithHandler:^{
@@ -38,7 +39,15 @@
             [weakSelf.tableView stopToFresh];
         });
     }];
-
+    
+    [self.tableView addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf.tableView stopToLoadMore];
+            NSLog(@"上拉加载更多完成---------");
+        });
+    }];
+    
 }
 
 - (void)didReceiveMemoryWarning {
