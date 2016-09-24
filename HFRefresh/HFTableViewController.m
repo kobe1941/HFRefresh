@@ -37,7 +37,7 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     
     // 设置contentInset需要在添加下拉刷新之前
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
     
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;

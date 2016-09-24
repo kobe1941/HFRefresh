@@ -35,7 +35,7 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     
     // 设置contentInset需要在添加下拉刷新前边，可随意修改以测试不同的情景
-    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 60, 0);
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
 //    self.automaticallyAdjustsScrollViewInsets = NO; // ios9好像不用设置这个
     
     // 用来兼容顶部的导航栏，实际用的时候，这一块可以放到父类的viewDidLoad里去实现
@@ -72,6 +72,7 @@
     }];
 }
 
+// 使用者自己决定何时添加上拉加载控件
 - (void)addLoadMoreRefresh
 {
     __weak typeof(self) weakSelf = self;

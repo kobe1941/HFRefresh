@@ -67,11 +67,14 @@ static NSString *cellID = @"cellID";
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"下拉刷新完成------------");
-            [weakSelf.collectionView reloadData];
+            // 去掉reloadData时的动画
+            [UIView performWithoutAnimation:^{
+                [weakSelf.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+            }];
+            
             [weakSelf.collectionView hf_stopRefresh];
             [weakSelf addLoadMoreRefresh];
             weakSelf.count = 0;
-            
         });
     }];
 }
@@ -89,7 +92,10 @@ static NSString *cellID = @"cellID";
                 [weakSelf.collectionView hf_loadMoreNoMore];
             } else {
                 [weakSelf.collectionView hf_stopLoadMore];
-                [weakSelf.collectionView reloadData];
+                // 去掉reloadData时的动画
+                [UIView performWithoutAnimation:^{
+                    [weakSelf.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+                }];
             }
         });
     }];

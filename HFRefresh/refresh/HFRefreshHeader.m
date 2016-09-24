@@ -9,7 +9,6 @@
 #import "HFRefreshHeader.h"
 
 const CGFloat HFRefreshHeaderHeight = 60;
-//const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 
 @interface HFRefreshHeader ()
 
@@ -195,7 +194,7 @@ const CGFloat HFRefreshHeaderHeight = 60;
 // 模拟用户手势触发刷新
 - (void)hf_triggleToRefresh
 {
-    [self setRefreshStatus:HFRefreshLoading];
+    [self hf_setRefreshStatus:HFRefreshLoading];
 
     CGPoint offset = CGPointMake(0, -self.scrollView.contentInset.top);
     [self.scrollView setContentOffset:offset animated:YES];
