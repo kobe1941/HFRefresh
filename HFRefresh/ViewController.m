@@ -25,31 +25,47 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     [self.view addSubview:self.tableView];
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     
-//    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+    
+    // 设置contentInset需要在添加下拉刷新前边
+//    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 60, 0);
+//    self.automaticallyAdjustsScrollViewInsets = NO; // ios9好像不用设置这个
+    
+    if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
+        self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
+    }
+//    self.extendedLayoutIncludesOpaqueBars = NO;
     
     __weak typeof(self) weakSelf = self;
-//    [self.tableView addPullDownToRefreshWithHandler:^{
-//        NSLog(@"开始下拉刷新啦--------------");
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            NSLog(@"下拉刷新完成------------");
-//            [weakSelf.tableView stopToFresh];
-//        });
-//    }];
-    
-    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.tableView triggleToReFresh];
-//    });
-    
-    
-    [self.tableView addLoadMoreForNextPageWithHandler:^{
-        NSLog(@"开始上拉加载更多---------");
+    [self.tableView addPullDownToRefreshWithHandler:^{
+        NSLog(@"开始下拉刷新啦--------------");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf.tableView stopToLoadMore];
-            NSLog(@"上拉加载更多完成---------");
+            NSLog(@"下拉刷新完成------------");
+            [weakSelf.tableView stopToFresh];
         });
     }];
+    
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView triggleToReFresh];
+    });
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.tableView stopToFresh];
+//    });
+    
+//    [self.tableView addLoadMoreForNextPageWithHandler:^{
+//        NSLog(@"开始上拉加载更多---------");
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [weakSelf.tableView stopToLoadMore];
+//            NSLog(@"上拉加载更多完成---------");
+//        });
+//    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,11 +73,14 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 #pragma mark - getter
 - (UITableView *)tableView
 {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
+#warning 此处tableView的frame必须跟控制器的view保持一致，因为有Nav导航栏，控制器的view会自适应
+        CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 64);
+        _tableView = [[UITableView alloc] initWithFrame:frame style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.delegate = self;
         

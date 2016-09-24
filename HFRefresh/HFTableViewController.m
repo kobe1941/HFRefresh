@@ -29,7 +29,19 @@
     [super viewDidLoad];
     [self.view addSubview:self.tableView];
     
-//    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+    
+    // 设置contentInset需要在添加下拉刷新之前
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 60, 0);
+    
+    if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
+        self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
+    }
     
     __weak typeof(self) weakSelf = self;
     [self.tableView addPullDownToRefreshWithHandler:^{
@@ -39,14 +51,19 @@
             [weakSelf.tableView stopToFresh];
         });
     }];
+
     
-    [self.tableView addLoadMoreForNextPageWithHandler:^{
-        NSLog(@"开始上拉加载更多---------");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf.tableView stopToLoadMore];
-            NSLog(@"上拉加载更多完成---------");
-        });
-    }];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView triggleToReFresh];
+    });
+    
+//    [self.tableView addLoadMoreForNextPageWithHandler:^{
+//        NSLog(@"开始上拉加载更多---------");
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [weakSelf.tableView stopToLoadMore];
+//            NSLog(@"上拉加载更多完成---------");
+//        });
+//    }];
     
 }
 
@@ -78,7 +95,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 5;
+    return 15;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

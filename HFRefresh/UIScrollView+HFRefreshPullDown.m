@@ -16,11 +16,8 @@ static const NSString *HFRefreshHandlerString;
 @interface UIScrollView ()
 
 @property (nonatomic, strong) HFRefreshHeader *refreshHeader;
-@property (nonatomic, copy) HFRefreshBLock handlerBLock;
 
 @end
-
-
 
 
 @implementation UIScrollView (HFRefreshPullDown)
@@ -37,40 +34,24 @@ static const NSString *HFRefreshHandlerString;
 }
 
 
-- (HFRefreshBLock)handlerBLock
-{
-    return objc_getAssociatedObject(self, &HFRefreshHandlerString);
-}
-
-
-- (void)setHandlerBLock:(HFRefreshBLock)handlerBLock
-{
-    objc_setAssociatedObject(self, &HFRefreshHandlerString, handlerBLock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-
 #pragma mark - 对外提供的方法
 - (void)addPullDownToRefreshWithHandler:(HFRefreshBLock)refreshBlock
 {
-    self.handlerBLock = refreshBlock;
-    
-    HFRefreshHeader *header = [[HFRefreshHeader alloc] initWithFrame:CGRectMake(0, -HFRefreshHeaderHeight, self.bounds.size.width, HFRefreshHeaderHeight)];
+    CGFloat originY = -HFRefreshHeaderHeight - self.contentInset.top;
+    HFRefreshHeader *header = [[HFRefreshHeader alloc] initWithFrame:CGRectMake(0, originY, self.bounds.size.width, HFRefreshHeaderHeight)];
     header.scrollView = self;
-
+    
     [self addSubview:header];
     [self bringSubviewToFront:header];
     self.refreshHeader = header;
-    __weak typeof(self) weakSelf = self;
+
     [header setRefreshEventBlock:^{
-        if (weakSelf.handlerBLock) {
-            weakSelf.handlerBLock();
-        }
+        refreshBlock();
     }];
 }
 
 - (void)triggleToReFresh
 {
-    // +1是为了触发刷新机制
     [self.refreshHeader triggleToReFresh];
 }
 
@@ -84,10 +65,4 @@ static const NSString *HFRefreshHandlerString;
     self.refreshHeader.scrollView = nil;
 }
 
-//- (void)handleRefreshBlock
-//{
-//    if (self.handlerBLock) {
-//        self.handlerBLock();
-//    }
-//}
 @end

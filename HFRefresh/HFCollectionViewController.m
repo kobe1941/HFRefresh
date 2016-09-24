@@ -22,8 +22,8 @@ static NSString *cellID = @"cellID";
 
 - (void)dealloc
 {
-    [self.collectionView resetPullToRefresh];
-    [self.collectionView resetLoadMoreForNextPage];
+//    [self.collectionView resetPullToRefresh];
+//    [self.collectionView resetLoadMoreForNextPage];
     NSLog(@"dealloc----->>>>> %@", NSStringFromClass([self class]));
 }
 
@@ -31,26 +31,41 @@ static NSString *cellID = @"cellID";
     [super viewDidLoad];
     
     [self.view addSubview:self.collectionView];
+    self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
     
-//    [self.collectionView reloadData];
-    self.collectionView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
-    __weak typeof(self) weakSelf = self;
-//    [self.collectionView addPullDownToRefreshWithHandler:^{
-//        NSLog(@"开始下拉刷新啦--------------");
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            NSLog(@"下拉刷新完成------------");
-//            [weakSelf.collectionView stopToFresh];
-//        });
-//    }];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+    
+    // 设置contentInset需要在添加下拉刷新之前
+    self.collectionView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
 
     
-    [self.collectionView addLoadMoreForNextPageWithHandler:^{
-        NSLog(@"开始上拉加载更多---------");
+    if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
+        self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [self.collectionView addPullDownToRefreshWithHandler:^{
+        NSLog(@"开始下拉刷新啦--------------");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf.collectionView stopToLoadMore];
-            NSLog(@"上拉加载更多完成---------");
+            NSLog(@"下拉刷新完成------------");
+            [weakSelf.collectionView stopToFresh];
         });
     }];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.collectionView triggleToReFresh];
+    });
+    
+//    [self.collectionView addLoadMoreForNextPageWithHandler:^{
+//        NSLog(@"开始上拉加载更多---------");
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [weakSelf.collectionView stopToLoadMore];
+//            NSLog(@"上拉加载更多完成---------");
+//        });
+//    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -86,7 +101,7 @@ static NSString *cellID = @"cellID";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 16;
+    return 66;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath

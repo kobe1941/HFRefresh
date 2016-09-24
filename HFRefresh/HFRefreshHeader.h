@@ -31,6 +31,8 @@ typedef void(^RefreshEventBlock)(void);
 - (void)setRefreshStatus:(HFRefreshStatus)refreshStatus;
 
 // 触发刷新后用于回调scrollView的下拉刷新网络请求
+// 回调要么用block要么用delegate
 - (void)setRefreshEventBlock:(RefreshEventBlock)refreshblock;
+
 
 @end

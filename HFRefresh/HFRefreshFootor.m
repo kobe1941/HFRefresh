@@ -27,6 +27,8 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
 
 @property (nonatomic, copy) LoadMoreEventBlock loadMoreBLock;
 
+@property (nonatomic, assign) BOOL isUpdateInsetBottomFromKVO;
+@property (nonatomic, assign) BOOL isUpdateInsetTopFromKVO;
 @end
 
 
@@ -138,7 +140,15 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
             
             self.textLabel.text = @"上拉加载更多";
             UIEdgeInsets insets = self.scrollView.contentInset;
+            if (self.isUpdateInsetBottomFromKVO) {
+                self.isUpdateInsetBottomFromKVO = NO;
+                if (self.originInsetBottom != 0) {
+                    self.originInsetBottom -= HFRefreshFooterHeight;
+                }
+                
+            }
             insets.bottom = self.originInsetBottom;
+            
             [UIView animateWithDuration:0.2 animations:^{
                 self.scrollView.contentInset = insets;
             }];
@@ -211,14 +221,24 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
             //        [self adjustRefreshStatusWithOffset:scrollView.contentOffset.y];
         } else if ([keyPath isEqualToString:@"contentSize"]) {
             CGSize contentSize = [[change objectForKey:NSKeyValueChangeNewKey] CGSizeValue];
+            NSLog(@"contentSize.height=%f", contentSize.height);
             CGRect tempFrame = self.frame;
             CGFloat bottomY = CGRectGetHeight(self.scrollView.frame) > contentSize.height ? CGRectGetHeight(self.scrollView.frame) : contentSize.height;
-            tempFrame.origin.y = bottomY + self.originInsetBottom;
+            tempFrame.origin.y = bottomY + self.originInsetBottom - self.originInsetTop;
+            if (self.isUpdateInsetTopFromKVO) {
+                self.isUpdateInsetTopFromKVO = NO;
+                if (self.originInsetTop != 0) {
+//                    tempFrame.origin.y += self.originInsetTop;
+                }
+            }
             self.frame = tempFrame;
         } else if ([keyPath isEqualToString:@"contentInset"]) {
             UIEdgeInsets contentInset = [[change objectForKey:NSKeyValueChangeNewKey] UIEdgeInsetsValue];
+            NSLog(@"contentInset=%@", NSStringFromUIEdgeInsets(contentInset));
             self.originInsetTop = contentInset.top;
             self.originInsetBottom = contentInset.bottom;
+            self.isUpdateInsetBottomFromKVO = YES;
+            self.isUpdateInsetTopFromKVO = YES;
         }
     }
 }
@@ -232,10 +252,10 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     CGFloat maxHeight = contentHeight >= scrollHeight ? contentHeight : scrollHeight;
     
     CGFloat fullHeight = offset + scrollHeight + self.originInsetTop;
-    CGFloat throld = maxHeight + HFRefreshFooterHeight + self.originInsetBottom;
+    CGFloat throld = maxHeight + HFRefreshFooterHeight + self.originInsetBottom ;//+ self.originInsetTop;
     
     NSLog(@"offset=%f, throld=%f, top=%f, originTop=%f, bottom=%f, originBottom=%f", offset, throld, self.scrollView.contentInset.top, self.originInsetTop, self.scrollView.contentInset.bottom, self.originInsetBottom);
-    NSLog(@"fullHeight=%f, throld=%f", fullHeight, throld);
+    NSLog(@"fullHeight=%f, throld=%f, self.frame=%@", fullHeight, throld, NSStringFromCGRect(self.frame));
     if (self.laodMoreStatus == HFLoadMoreTriggle && !self.scrollView.isDragging) {
         [self setLoadMoreStatus:HFLoadMoreLoading];
     } else if ((self.laodMoreStatus == HFLoadMoreNormal) && (fullHeight > throld)) {
