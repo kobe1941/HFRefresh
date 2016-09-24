@@ -39,7 +39,7 @@ static const NSString *HFRefreshHandlerString;
 {
     CGFloat originY = -HFRefreshHeaderHeight - self.contentInset.top;
     HFRefreshHeader *header = [[HFRefreshHeader alloc] initWithFrame:CGRectMake(0, originY, self.bounds.size.width, HFRefreshHeaderHeight)];
-    header.scrollView = self;
+//    header.scrollView = self;
     
     [self addSubview:header];
     [self bringSubviewToFront:header];

@@ -20,8 +20,8 @@
 
 - (void)dealloc
 {
-    [self.tableView resetPullToRefresh];
-    [self.tableView resetLoadMoreForNextPage];
+//    [self.tableView resetPullToRefresh];
+//    [self.tableView resetLoadMoreForNextPage];
     NSLog(@"dealloc----->>>>> %@", NSStringFromClass([self class]));
 }
 
@@ -39,6 +39,7 @@
     // 设置contentInset需要在添加下拉刷新之前
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 60, 0);
     
+    // 实际用的时候，这一块可以放到父类的viewDidLoad里去实现
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
     }
@@ -53,9 +54,9 @@
     }];
 
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableView triggleToReFresh];
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.tableView triggleToReFresh];
+//    });
     
 //    [self.tableView addLoadMoreForNextPageWithHandler:^{
 //        NSLog(@"开始上拉加载更多---------");

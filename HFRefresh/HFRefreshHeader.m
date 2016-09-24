@@ -95,21 +95,21 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
     return _textLabel;
 }
 
-- (void)setScrollView:(UIScrollView *)scrollView
-{
-    if (_scrollView) {
-        [_scrollView removeObserver:self forKeyPath:@"contentOffset"];
-    }
-    
-    if (scrollView) {
-        [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
-
-        // 保存scrolView最初的inset
-        self.originInsetTop = scrollView.contentInset.top;
-        NSLog(@"originInsetTop = %f", self.originInsetTop);
-    }
-    _scrollView = scrollView;
-}
+//- (void)setScrollView:(UIScrollView *)scrollView
+//{
+//    if (_scrollView) {
+//        [_scrollView removeObserver:self forKeyPath:@"contentOffset"];
+//    }
+//    
+//    if (scrollView) {
+//        [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+//
+//        // 保存scrolView最初的inset
+//        self.originInsetTop = scrollView.contentInset.top;
+//        NSLog(@"originInsetTop = %f", self.originInsetTop);
+//    }
+//    _scrollView = scrollView;
+//}
 
 
 - (void)setRefreshStatus:(HFRefreshStatus)refreshStatus
@@ -174,13 +174,28 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 
 // 当控制器页面返回时，会调用该方法，此时必须移除KVO
 // 如果不实现该方法，就只能在控制器的dealloc里手动把scrollView的KVO移除
-//- (void)willMoveToSuperview:(UIView *)newSuperview
-//{
-//    NSLog(@"%@-------->>>>>>>> newSuperview = %@", NSStringFromSelector(_cmd), newSuperview);
-//    if (!newSuperview) {
-//        self.scrollView = nil;
-//    }
-//}
+// 控制器销毁时，会将header移除，但是要注意，此时_scrollView已经置空，而self.superview却仍然在.
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    [super willMoveToSuperview:newSuperview];
+    
+    // newSuperview存在且如果不是UIScrollView，直接返回。移除的时候newSuperview是nil
+    if (newSuperview && ![newSuperview isKindOfClass:[UIScrollView class]]) {
+        return;
+    }
+    
+    UIScrollView *scrollView = (UIScrollView *)newSuperview;
+    // 移除KVO，此处不能用_scrollView
+    [self.superview removeObserver:self forKeyPath:@"contentOffset"];
+    
+    if (newSuperview) { // 新的父控件
+        [scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+        // 保存scrolView最初的inset
+        self.originInsetTop = scrollView.contentInset.top;
+    }
+    
+    _scrollView = scrollView;
+}
 
 // 模拟用户手势触发刷新
 - (void)triggleToReFresh
@@ -209,19 +224,15 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 {
     // 只要是触发状态且手指松开，则进入刷新状态，不用关注此时的offset，因为KVO的offset变化的太快导致不准确
     // 否则根据offset来判断会有误差
-//    NSLog(@"offset = %f", offset);
     if (self.refreshStatus == HFRefreshTriggle && !self.scrollView.isDragging) {
         [self setRefreshStatus:HFRefreshLoading];
     } else if ((self.refreshStatus == HFRefreshNormal) && (offset <= -(HFRefreshHeaderHeight+self.originInsetTop))) {
             [self  setRefreshStatus:HFRefreshTriggle];
     } else if ((self.refreshStatus != HFRefreshNormal) && (offset > -(HFRefreshHeaderHeight+self.originInsetTop))) {
         if (self.refreshStatus != HFRefreshLoading) { // 排除掉正在刷新时，手势往上滑取消刷新动画的情况
-//            NSLog(@"scrollView.contentInset = %@", NSStringFromUIEdgeInsets(self.scrollView.contentInset));
             [self setRefreshStatus:HFRefreshNormal];
         }
-        
     }
-    
 }
 
 @end
