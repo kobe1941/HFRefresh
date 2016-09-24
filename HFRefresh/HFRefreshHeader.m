@@ -9,7 +9,6 @@
 #import "HFRefreshHeader.h"
 
 const CGFloat HFRefreshHeaderHeight = 60;
-
 const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 
 @interface HFRefreshHeader ()
@@ -19,9 +18,7 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 @property (nonatomic, strong) UILabel *textLabel;
 
 @property (nonatomic, assign) HFRefreshStatus refreshStatus;
-
 @property (nonatomic, assign) CGFloat originInsetTop; // scrollView最初的偏移量
-
 @property (nonatomic, copy) RefreshEventBlock refreshBLock;
 
 @end
@@ -160,8 +157,6 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
             if (self.refreshBLock) {
                 self.refreshBLock();
             }
-            
-            
             break;
         }
     }

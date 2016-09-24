@@ -20,10 +20,8 @@ typedef void(^LoadMoreEventBlock)(void);
 
 @interface HFRefreshFootor : UIView
 
-
 // 下拉刷新的scrollView，weak避免循环引用
 @property (nonatomic, weak) UIScrollView *scrollView;
-
 
 // 切换控件的状态
 - (void)setLoadMoreStatus:(HFLoadMoreStatus)loadMoreStatus;

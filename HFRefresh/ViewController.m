@@ -16,6 +16,8 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 
+@property (nonatomic, strong) NSMutableArray *mutableArray;
+
 @end
 
 @implementation ViewController
@@ -23,6 +25,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    for (int i = 0; i < 10; i++) {
+        [self.mutableArray addObject:@"HFRefresh"];
+    }
     
     [self.view addSubview:self.tableView];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -36,17 +42,23 @@
 //    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 60, 0);
 //    self.automaticallyAdjustsScrollViewInsets = NO; // ios9好像不用设置这个
     
+    // 用来兼容顶部的导航栏
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
-        self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
+        self.edgesForExtendedLayout = UIRectEdgeLeft | UIRectEdgeRight | UIRectEdgeBottom;
     }
-//    self.extendedLayoutIncludesOpaqueBars = NO;
     
     __weak typeof(self) weakSelf = self;
     [self.tableView addPullDownToRefreshWithHandler:^{
         NSLog(@"开始下拉刷新啦--------------");
+        [weakSelf.mutableArray removeAllObjects];
+        for (int i = 0; i < 10; i++) {
+            [weakSelf.mutableArray addObject:@"HFRefresh"];
+        }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"下拉刷新完成------------");
+            [weakSelf.tableView reloadData];
             [weakSelf.tableView stopToFresh];
+            
         });
     }];
     
@@ -55,17 +67,17 @@
 //        [self.tableView triggleToReFresh];
 //    });
     
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.tableView stopToFresh];
-//    });
+
     
-//    [self.tableView addLoadMoreForNextPageWithHandler:^{
-//        NSLog(@"开始上拉加载更多---------");
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [weakSelf.tableView stopToLoadMore];
-//            NSLog(@"上拉加载更多完成---------");
-//        });
-//    }];
+    [self.tableView addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
+        [weakSelf.mutableArray addObjectsFromArray:[weakSelf.mutableArray copy]];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"上拉加载更多完成---------");
+            [weakSelf.tableView stopToLoadMore];
+            [weakSelf.tableView reloadData];
+        });
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -90,6 +102,14 @@
     return _tableView;
 }
 
+- (NSMutableArray *)mutableArray
+{
+    if (!_mutableArray) {
+        _mutableArray = [NSMutableArray array];
+    }
+    
+    return _mutableArray;
+}
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -99,7 +119,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 18;
+    return self.mutableArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -112,9 +132,9 @@
     
     NSString *text = @"";
     if (indexPath.row <= 3) {
-        text = @"tableView test refresh";
+        text = @"UITableView        test refresh";
     } else {
-        text = @"collectionView test refresh";
+        text = @"UICollectionView      test refresh";
     }
     
     cell.textLabel.text = text;//[NSString stringWithFormat:@"%ld-%ld", (long)indexPath.section, (long)indexPath.row];

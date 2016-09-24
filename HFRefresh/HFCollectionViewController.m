@@ -55,17 +55,18 @@ static NSString *cellID = @"cellID";
         });
     }];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.collectionView triggleToReFresh];
-    });
+
     
-//    [self.collectionView addLoadMoreForNextPageWithHandler:^{
-//        NSLog(@"开始上拉加载更多---------");
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [weakSelf.collectionView stopToLoadMore];
-//            NSLog(@"上拉加载更多完成---------");
-//        });
-//    }];
+    [self.collectionView addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf.collectionView stopToLoadMore];
+            NSLog(@"上拉加载更多完成---------");
+        });
+    }];
+    
+    
+    [self.collectionView triggleToReFresh];
 }
 
 - (void)didReceiveMemoryWarning {

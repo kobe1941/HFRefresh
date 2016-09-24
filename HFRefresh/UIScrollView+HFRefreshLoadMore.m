@@ -7,7 +7,6 @@
 //
 
 #import "UIScrollView+HFRefreshLoadMore.h"
-
 #import "HFRefreshFootor.h"
 #import <objc/runtime.h>
 
@@ -17,7 +16,6 @@ static const NSString *HFRefreshHandlerFooterString;
 @interface UIScrollView ()
 
 @property (nonatomic, strong) HFRefreshFootor *refreshFooter;
-@property (nonatomic, copy) HFLoadMoreBLock handlerBLock;
 
 @end
 
@@ -35,40 +33,28 @@ static const NSString *HFRefreshHandlerFooterString;
     objc_setAssociatedObject(self, &HFRefreshFooterString, refreshFooter, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-
-- (HFLoadMoreBLock)handlerBLock
-{
-    return objc_getAssociatedObject(self, &HFRefreshHandlerFooterString);
-}
-
-
-- (void)setHandlerBLock:(HFLoadMoreBLock)handlerBLock
-{
-    objc_setAssociatedObject(self, &HFRefreshHandlerFooterString, handlerBLock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-
 #pragma mark - 对外提供的方法
 - (void)addLoadMoreForNextPageWithHandler:(HFLoadMoreBLock)loadMoreBlock
 {
-    self.handlerBLock = loadMoreBlock;
-    
     CGFloat bottomY = CGRectGetHeight(self.frame) > self.contentSize.height ? CGRectGetHeight(self.frame) : self.contentSize.height;
+    CGFloat originTop = self.contentInset.top;
     CGFloat originBottom = self.contentInset.bottom;
     
-    bottomY = bottomY + originBottom;
+    // 兼容处理，如果不想兼容contentSize较少时，直接注释if这个判断，保留else的逻辑即可.Footer里同样处理
+    if (self.contentSize.height < self.frame.size.height) {
+        bottomY -= originTop;
+    } else {
+        bottomY += originBottom;
+    }
     
     HFRefreshFootor *footer = [[HFRefreshFootor alloc] initWithFrame:CGRectMake(0, bottomY, self.bounds.size.width, HFRefreshFooterHeight)];
-    footer.scrollView = self;
+//    footer.scrollView = self;
     
     [self addSubview:footer];
     [self bringSubviewToFront:footer];
     self.refreshFooter = footer;
-    __weak typeof(self) weakSelf = self;
     [footer setLoadMoreEventBlock:^{
-        if (weakSelf.handlerBLock) {
-            weakSelf.handlerBLock();
-        }
+        loadMoreBlock();
     }];
 }
 

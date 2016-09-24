@@ -15,7 +15,6 @@ typedef void(^HFLoadMoreBLock)(void);
 // 添加下拉刷新
 - (void)addLoadMoreForNextPageWithHandler:(HFLoadMoreBLock)loadMoreBlock;
 
-
 // 停止刷新
 - (void)stopToLoadMore;
 

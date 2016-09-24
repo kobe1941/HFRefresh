@@ -37,7 +37,7 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     
     // 设置contentInset需要在添加下拉刷新之前
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 60, 0);
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     
     // 实际用的时候，这一块可以放到父类的viewDidLoad里去实现
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
@@ -52,20 +52,16 @@
             [weakSelf.tableView stopToFresh];
         });
     }];
-
     
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.tableView triggleToReFresh];
-//    });
+    [self.tableView addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf.tableView stopToLoadMore];
+            NSLog(@"上拉加载更多完成---------");
+        });
+    }];
     
-//    [self.tableView addLoadMoreForNextPageWithHandler:^{
-//        NSLog(@"开始上拉加载更多---------");
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [weakSelf.tableView stopToLoadMore];
-//            NSLog(@"上拉加载更多完成---------");
-//        });
-//    }];
-    
+    [self.tableView triggleToReFresh];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -96,7 +92,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 15;
+    return 25;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -122,8 +118,6 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    
 }
-
 
 @end
