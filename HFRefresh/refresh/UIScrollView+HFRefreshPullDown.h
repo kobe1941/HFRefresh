@@ -13,15 +13,15 @@ typedef void(^HFRefreshBLock)(void);
 @interface UIScrollView (HFRefreshPullDown)
 
 // 添加下拉刷新
-- (void)addPullDownToRefreshWithHandler:(HFRefreshBLock)refreshBlock;
+- (void)hf_addPullDownToRefreshWithHandler:(HFRefreshBLock)refreshBlock;
 
 // 模拟手势触发刷新
-- (void)triggleToReFresh;
+- (void)hf_triggleToRefresh;
 
 // 停止刷新
-- (void)stopToFresh;
+- (void)hf_stopRefresh;
 
 // 用于取消KVO的监听，防止页面返回后造成崩溃
-//- (void)resetPullToRefresh;
+//- (void)hf_resetPullToRefresh;
 
 @end

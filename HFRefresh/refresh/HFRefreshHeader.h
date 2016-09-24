@@ -25,14 +25,14 @@ typedef void(^RefreshEventBlock)(void);
 @property (nonatomic, weak) UIScrollView *scrollView;
 
 // 触发刷新
-- (void)triggleToReFresh;
+- (void)hf_triggleToRefresh;
 
 // 切换控件的状态
-- (void)setRefreshStatus:(HFRefreshStatus)refreshStatus;
+- (void)hf_setRefreshStatus:(HFRefreshStatus)refreshStatus;
 
 // 触发刷新后用于回调scrollView的下拉刷新网络请求
 // 回调要么用block要么用delegate
-- (void)setRefreshEventBlock:(RefreshEventBlock)refreshblock;
+- (void)hf_setRefreshEventBlock:(RefreshEventBlock)refreshblock;
 
 
 @end

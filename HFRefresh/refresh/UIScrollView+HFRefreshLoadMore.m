@@ -19,7 +19,6 @@ static const NSString *HFRefreshHandlerFooterString;
 
 @end
 
-
 @implementation UIScrollView (HFRefreshLoadMore)
 
 #pragma mark - 关联对象和属性
@@ -34,16 +33,18 @@ static const NSString *HFRefreshHandlerFooterString;
 }
 
 #pragma mark - 对外提供的方法
-- (void)addLoadMoreForNextPageWithHandler:(HFLoadMoreBLock)loadMoreBlock
+- (void)hf_addLoadMoreForNextPageWithHandler:(HFLoadMoreBLock)loadMoreBlock
 {
-    CGFloat bottomY = CGRectGetHeight(self.frame) > self.contentSize.height ? CGRectGetHeight(self.frame) : self.contentSize.height;
-    CGFloat originTop = self.contentInset.top;
+    if ([self.subviews containsObject:self.refreshFooter]) {
+        NSLog(@"已经添加过上拉加载控件，不再重复添加------------>>>>>>>>>>>>>>>>>");
+        return;
+    }
+    
+    CGFloat bottomY = self.contentSize.height;
     CGFloat originBottom = self.contentInset.bottom;
     
-    // 兼容处理，如果不想兼容contentSize较少时，直接注释if这个判断，保留else的逻辑即可.Footer里同样处理
-    if (self.contentSize.height < self.frame.size.height) {
-        bottomY -= originTop;
-    } else {
+    // 兼容处理
+    if (self.contentSize.height > self.frame.size.height) {
         bottomY += originBottom;
     }
     
@@ -53,20 +54,34 @@ static const NSString *HFRefreshHandlerFooterString;
     [self addSubview:footer];
     [self bringSubviewToFront:footer];
     self.refreshFooter = footer;
-    [footer setLoadMoreEventBlock:^{
+    [footer hf_setLoadMoreEventBlock:^{
         loadMoreBlock();
     }];
+    
+    UIEdgeInsets insets = self.contentInset;
+    insets.bottom += HFRefreshFooterHeight;
+    self.contentInset = insets;
 }
 
-
-- (void)stopToLoadMore
+- (void)hf_stopLoadMore
 {
-    [self.refreshFooter setLoadMoreStatus:HFLoadMoreNormal];
+    [self.refreshFooter hf_setLoadMoreStatus:HFLoadMoreNormal];
 }
 
-- (void)resetLoadMoreForNextPage
+- (void)hf_loadMoreNoMore
+{
+    UIEdgeInsets insets = self.contentInset;
+    insets.bottom -= HFRefreshFooterHeight; // 跟添加的时候相呼应，一个加一个减
+    [UIView animateWithDuration:0.2 animations:^{
+        self.contentInset = insets;
+    } completion:^(BOOL finished) {
+        [self.refreshFooter removeFromSuperview];
+    }];
+}
+/*
+- (void)hf_resetLoadMoreForNextPage
 {
     self.refreshFooter.scrollView = nil;
 }
-
+*/
 @end

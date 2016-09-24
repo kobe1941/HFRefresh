@@ -15,8 +15,8 @@
 @interface ViewController ()<UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
-
 @property (nonatomic, strong) NSMutableArray *mutableArray;
+@property (nonatomic, assign) NSInteger count; // 记录上拉加载更多的次数
 
 @end
 
@@ -26,29 +26,36 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    for (int i = 0; i < 10; i++) {
-        [self.mutableArray addObject:@"HFRefresh"];
-    }
-    
+    // autolayout
     [self.view addSubview:self.tableView];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     
-    // 设置contentInset需要在添加下拉刷新前边
-//    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 60, 0);
+    // 设置contentInset需要在添加下拉刷新前边，可随意修改以测试不同的情景
+    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 60, 0);
 //    self.automaticallyAdjustsScrollViewInsets = NO; // ios9好像不用设置这个
     
-    // 用来兼容顶部的导航栏
+    // 用来兼容顶部的导航栏，实际用的时候，这一块可以放到父类的viewDidLoad里去实现
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeLeft | UIRectEdgeRight | UIRectEdgeBottom;
     }
     
+    [self addPullDownRefresh]; // 添加下拉刷新
+    [self addLoadMoreRefresh]; // 添加上拉加载更多
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)addPullDownRefresh
+{
     __weak typeof(self) weakSelf = self;
-    [self.tableView addPullDownToRefreshWithHandler:^{
+    [self.tableView hf_addPullDownToRefreshWithHandler:^{
         NSLog(@"开始下拉刷新啦--------------");
         [weakSelf.mutableArray removeAllObjects];
         for (int i = 0; i < 10; i++) {
@@ -57,34 +64,32 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"下拉刷新完成------------");
             [weakSelf.tableView reloadData];
-            [weakSelf.tableView stopToFresh];
+            [weakSelf.tableView hf_stopRefresh];
+            [weakSelf addLoadMoreRefresh];
+            weakSelf.count = 0;
             
         });
     }];
-    
+}
 
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [self.tableView triggleToReFresh];
-//    });
-    
-
-    
-    [self.tableView addLoadMoreForNextPageWithHandler:^{
+- (void)addLoadMoreRefresh
+{
+    __weak typeof(self) weakSelf = self;
+    [self.tableView hf_addLoadMoreForNextPageWithHandler:^{
         NSLog(@"开始上拉加载更多---------");
-        [weakSelf.mutableArray addObjectsFromArray:[weakSelf.mutableArray copy]];
+        [weakSelf.mutableArray addObjectsFromArray:[[weakSelf.mutableArray subarrayWithRange:NSMakeRange(0, 5)] copy]];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"上拉加载更多完成---------");
-            [weakSelf.tableView stopToLoadMore];
-            [weakSelf.tableView reloadData];
+            weakSelf.count++;
+            if (weakSelf.count >= 3) {
+                [weakSelf.tableView hf_loadMoreNoMore];
+            } else {
+                [weakSelf.tableView hf_stopLoadMore];
+                [weakSelf.tableView reloadData];
+            }
         });
     }];
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 
 #pragma mark - getter
 - (UITableView *)tableView
@@ -106,6 +111,9 @@
 {
     if (!_mutableArray) {
         _mutableArray = [NSMutableArray array];
+        for (int i = 0; i < 10; i++) {
+            [_mutableArray addObject:@"HFRefresh"];
+        }
     }
     
     return _mutableArray;
@@ -158,7 +166,6 @@
         HFCollectionViewController *vc = [[HFCollectionViewController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
     }
-    
 }
 
 @end

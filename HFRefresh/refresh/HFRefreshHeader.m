@@ -9,7 +9,7 @@
 #import "HFRefreshHeader.h"
 
 const CGFloat HFRefreshHeaderHeight = 60;
-const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
+//const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 
 @interface HFRefreshHeader ()
 
@@ -35,13 +35,13 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setupUI];
+        [self hf_setupUI];
     }
     
     return self;
 }
 
-- (void)setupUI
+- (void)hf_setupUI
 {
     [self addSubview:self.arrowImage];
     [self addSubview:self.refreshIndicator];
@@ -61,7 +61,7 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.refreshIndicator attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.refreshIndicator attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     
-    [self setRefreshStatus:HFRefreshNormal];
+    [self hf_setRefreshStatus:HFRefreshNormal];
 }
 
 #pragma mark - getter && setter
@@ -70,6 +70,7 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
     if (!_arrowImage) {
         _arrowImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"refreshArrow"]];
     }
+    
     return _arrowImage;
 }
 
@@ -108,8 +109,7 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 //    _scrollView = scrollView;
 //}
 
-
-- (void)setRefreshStatus:(HFRefreshStatus)refreshStatus
+- (void)hf_setRefreshStatus:(HFRefreshStatus)refreshStatus
 {
     _refreshStatus = refreshStatus;
     switch (refreshStatus) {
@@ -151,7 +151,7 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
             self.textLabel.text = @"加载中...";
             
             UIEdgeInsets insets = self.scrollView.contentInset;
-            insets.top = HFTriggleHeaderThrold + self.originInsetTop;
+            insets.top = HFRefreshHeaderHeight + self.originInsetTop;
             self.scrollView.contentInset = insets;
             // 触发下拉刷新的网络请求
             if (self.refreshBLock) {
@@ -162,7 +162,7 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
     }
 }
 
-- (void)setRefreshEventBlock:(RefreshEventBlock)refreshblock
+- (void)hf_setRefreshEventBlock:(RefreshEventBlock)refreshblock
 {
     self.refreshBLock = refreshblock;
 }
@@ -193,14 +193,13 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
 }
 
 // 模拟用户手势触发刷新
-- (void)triggleToReFresh
+- (void)hf_triggleToRefresh
 {
     [self setRefreshStatus:HFRefreshLoading];
-   
+
     CGPoint offset = CGPointMake(0, -self.scrollView.contentInset.top);
     [self.scrollView setContentOffset:offset animated:YES];
 }
-
 
 #pragma mark - KVO
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
@@ -208,24 +207,24 @@ const CGFloat HFTriggleHeaderThrold = HFRefreshHeaderHeight;
     if ([object isKindOfClass:[UIScrollView class]] && [keyPath isEqualToString:@"contentOffset"]) {
 
         CGPoint contentOffset = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
-        [self adjustRefreshStatusWithOffset:contentOffset.y];
+        [self hf_adjustRefreshStatusWithOffset:contentOffset.y];
         // 因为KVO的实现机制，不能直接读取属性，因为此时该setter方法还未生效，所以读出来的值也是旧的
 //        UIScrollView *scrollView = (UIScrollView *)object;
 //        [self adjustRefreshStatusWithOffset:scrollView.contentOffset.y];
     }
 }
 
-- (void)adjustRefreshStatusWithOffset:(CGFloat)offset
+- (void)hf_adjustRefreshStatusWithOffset:(CGFloat)offset
 {
     // 只要是触发状态且手指松开，则进入刷新状态，不用关注此时的offset，因为KVO的offset变化的太快导致不准确
     // 否则根据offset来判断会有误差
     if (self.refreshStatus == HFRefreshTriggle && !self.scrollView.isDragging) {
-        [self setRefreshStatus:HFRefreshLoading];
+        [self hf_setRefreshStatus:HFRefreshLoading];
     } else if ((self.refreshStatus == HFRefreshNormal) && (offset <= -(HFRefreshHeaderHeight+self.originInsetTop))) {
-            [self  setRefreshStatus:HFRefreshTriggle];
+            [self hf_setRefreshStatus:HFRefreshTriggle];
     } else if ((self.refreshStatus != HFRefreshNormal) && (offset > -(HFRefreshHeaderHeight+self.originInsetTop))) {
         if (self.refreshStatus != HFRefreshLoading) { // 排除掉正在刷新时，手势往上滑取消刷新动画的情况
-            [self setRefreshStatus:HFRefreshNormal];
+            [self hf_setRefreshStatus:HFRefreshNormal];
         }
     }
 }

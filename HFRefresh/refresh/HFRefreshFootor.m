@@ -37,13 +37,13 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setupUI];
+        [self hf_setupUI];
     }
     
     return self;
 }
 
-- (void)setupUI
+- (void)hf_setupUI
 {
     [self addSubview:self.arrowImage];
     [self addSubview:self.loadMoreIndicator];
@@ -63,7 +63,7 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.loadMoreIndicator attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.loadMoreIndicator attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     
-    [self setLoadMoreStatus:HFLoadMoreNormal];
+    [self hf_setLoadMoreStatus:HFLoadMoreNormal];
 }
 
 #pragma mark - getter && setter
@@ -94,6 +94,7 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     return _textLabel;
 }
 
+/*
 - (void)setScrollView:(UIScrollView *)scrollView
 {
     if (_scrollView) {
@@ -113,9 +114,9 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     }
     _scrollView = scrollView;
 }
+*/
 
-
-- (void)setLoadMoreStatus:(HFLoadMoreStatus)loadMoreStatus;
+- (void)hf_setLoadMoreStatus:(HFLoadMoreStatus)loadMoreStatus;
 {
     _laodMoreStatus = loadMoreStatus;
     switch (loadMoreStatus) {
@@ -131,13 +132,14 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
             self.textLabel.text = @"上拉加载更多";
             UIEdgeInsets insets = self.scrollView.contentInset;
             insets.top = self.originInsetTop;
-            insets.bottom = self.originInsetBottom;
+            insets.bottom = self.originInsetBottom + HFRefreshFooterHeight;
             
             [UIView animateWithDuration:0.2 animations:^{
                 self.scrollView.contentInset = insets;
             }];
             break;
         }
+        
         case HFLoadMoreTriggle: {
             self.loadMoreIndicator.hidden = YES;
             [self.loadMoreIndicator stopAnimating];
@@ -150,23 +152,13 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
             self.textLabel.text = @"释放立即加载";
             break;
         }
+         
         case HFLoadMoreLoading: {
             self.loadMoreIndicator.hidden = NO;
             [self.loadMoreIndicator startAnimating];
             self.arrowImage.hidden = YES;
             self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI*2);
             self.textLabel.text = @"加载中...";
-            
-            UIEdgeInsets insets = self.scrollView.contentInset;
-            insets.bottom = self.originInsetBottom + HFTriggleFooterThrold;
-            if (self.scrollView.contentSize.height < self.scrollView.frame.size.height) {
-                // 针对contentSize较小时做兼容
-                insets.top -= HFTriggleFooterThrold;
-            }
-            
-            [UIView animateWithDuration:0.2 animations:^{
-                self.scrollView.contentInset = insets;
-            }];
 
             // 触发下拉刷新的网络请求
             if (self.loadMoreBLock) {
@@ -177,7 +169,7 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     }
 }
 
-- (void)setLoadMoreEventBlock:(LoadMoreEventBlock)loadMoreblock
+- (void)hf_setLoadMoreEventBlock:(LoadMoreEventBlock)loadMoreblock
 {
     self.loadMoreBLock = loadMoreblock;
 }
@@ -213,15 +205,13 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     if ([object isKindOfClass:[UIScrollView class]]) {
         if ([keyPath isEqualToString:@"contentOffset"]) {
             CGPoint contentOffset = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
-            [self adjustRefreshStatusWithOffset:contentOffset.y];
+            [self hf_adjustRefreshStatusWithOffset:contentOffset.y];
         } else if ([keyPath isEqualToString:@"contentSize"]) {
             CGSize contentSize = [[change objectForKey:NSKeyValueChangeNewKey] CGSizeValue];
             CGRect tempFrame = self.frame;
             
-            CGFloat bottomY = CGRectGetHeight(self.scrollView.frame) > contentSize.height ? CGRectGetHeight(self.scrollView.frame) : contentSize.height;
-            if (self.scrollView.contentSize.height < self.scrollView.frame.size.height) {
-                bottomY -= self.originInsetTop;
-            } else {
+            CGFloat bottomY = contentSize.height;
+            if (self.scrollView.contentSize.height > (self.scrollView.frame.size.height - HFRefreshFooterHeight)) {
                 bottomY += self.originInsetBottom;
             }
             tempFrame.origin.y = bottomY;
@@ -231,31 +221,30 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     }
 }
 
-- (void)adjustRefreshStatusWithOffset:(CGFloat)offset
+- (void)hf_adjustRefreshStatusWithOffset:(CGFloat)offset
 {
-    // 只要是触发状态且手指松开，则进入刷新状态，不用关注此时的offset，因为KVO的offset变化的太快导致不准确
-    // 否则根据offset来判断会有误差
     CGFloat scrollHeight = self.scrollView.frame.size.height;
     CGFloat contentHeight = self.scrollView.contentSize.height;
-    CGFloat maxHeight = contentHeight >= scrollHeight ? contentHeight : scrollHeight;
-    
-    CGFloat fullHeight = offset + scrollHeight; //+ self.originInsetTop;
-    CGFloat throld = maxHeight + HFRefreshFooterHeight;//+ self.originInsetTop;
-    if (self.scrollView.contentSize.height < self.scrollView.frame.size.height) {
-        throld -= self.originInsetTop;
-    } else {
-        throld += self.originInsetBottom;
+    if (contentHeight <= 0) {
+        return; // 初始化期间直接返回
     }
     
-//    NSLog(@"offset=%f, throld=%f, top=%f, originTop=%f, bottom=%f, originBottom=%f", offset, throld, self.scrollView.contentInset.top, self.originInsetTop, self.scrollView.contentInset.bottom, self.originInsetBottom);
-//    NSLog(@"fullHeight=%f, throld=%f, self.frame=%@", fullHeight, throld, NSStringFromCGRect(self.frame));
+    CGFloat fullHeight = offset + scrollHeight;
+    CGFloat throld = contentHeight + HFRefreshFooterHeight + self.originInsetBottom;
+    if (self.scrollView.contentSize.height <= (self.scrollView.frame.size.height - HFRefreshFooterHeight)) {
+        fullHeight = offset + contentHeight + self.originInsetTop;
+        throld = contentHeight;
+    }
+    
+    // 只要是触发状态且手指松开，则进入刷新状态，不用关注此时的offset，因为KVO的offset变化的太快导致不准确
+    // 否则根据offset来判断会有误差
     if (self.laodMoreStatus == HFLoadMoreTriggle && !self.scrollView.isDragging) {
-        [self setLoadMoreStatus:HFLoadMoreLoading];
+        [self hf_setLoadMoreStatus:HFLoadMoreLoading];
     } else if ((self.laodMoreStatus == HFLoadMoreNormal) && (fullHeight > throld)) {
-        [self  setLoadMoreStatus:HFLoadMoreTriggle];
+        [self  hf_setLoadMoreStatus:HFLoadMoreTriggle];
     } else if ((self.laodMoreStatus != HFLoadMoreNormal) && (fullHeight <= throld)) {
         if (self.laodMoreStatus != HFLoadMoreLoading) { // 排除掉正在刷新时，手势滑动取消刷新动画的情况
-            [self setLoadMoreStatus:HFLoadMoreNormal];
+            [self hf_setLoadMoreStatus:HFLoadMoreNormal];
         }
     }
 }

@@ -14,6 +14,8 @@ static NSString *cellID = @"cellID";
 @interface HFCollectionViewController ()<UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) NSMutableArray *mutableArray;
+@property (nonatomic, assign) NSInteger count; // 记录上拉加载更多的次数
 
 @end
 
@@ -38,39 +40,72 @@ static NSString *cellID = @"cellID";
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.collectionView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     
     // 设置contentInset需要在添加下拉刷新之前
-    self.collectionView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+//    self.collectionView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
 
-    
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
     }
     
-    __weak typeof(self) weakSelf = self;
-    [self.collectionView addPullDownToRefreshWithHandler:^{
-        NSLog(@"开始下拉刷新啦--------------");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSLog(@"下拉刷新完成------------");
-            [weakSelf.collectionView stopToFresh];
-        });
-    }];
-    
-
-    
-    [self.collectionView addLoadMoreForNextPageWithHandler:^{
-        NSLog(@"开始上拉加载更多---------");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf.collectionView stopToLoadMore];
-            NSLog(@"上拉加载更多完成---------");
-        });
-    }];
-    
-    
-    [self.collectionView triggleToReFresh];
+    [self addPullDownRefresh];
+    [self addLoadMoreRefresh];
+    [self.collectionView hf_triggleToRefresh];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)addPullDownRefresh
+{
+    __weak typeof(self) weakSelf = self;
+    [self.collectionView hf_addPullDownToRefreshWithHandler:^{
+        NSLog(@"开始下拉刷新啦--------------");
+        [weakSelf.mutableArray removeAllObjects];
+        for (int i = 0; i < 10; i++) {
+            [weakSelf.mutableArray addObject:@"HFRefresh"];
+        }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"下拉刷新完成------------");
+            [weakSelf.collectionView reloadData];
+            [weakSelf.collectionView hf_stopRefresh];
+            [weakSelf addLoadMoreRefresh];
+            weakSelf.count = 0;
+            
+        });
+    }];
+}
+
+- (void)addLoadMoreRefresh
+{
+    __weak typeof(self) weakSelf = self;
+    [self.collectionView hf_addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
+        [weakSelf.mutableArray addObjectsFromArray:[[weakSelf.mutableArray subarrayWithRange:NSMakeRange(0, 8)] copy]];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"上拉加载更多完成---------");
+            weakSelf.count++;
+            if (weakSelf.count >= 4) {
+                [weakSelf.collectionView hf_loadMoreNoMore];
+            } else {
+                [weakSelf.collectionView hf_stopLoadMore];
+                [weakSelf.collectionView reloadData];
+            }
+        });
+    }];
+}
+
+#pragma mark - getter
+- (NSMutableArray *)mutableArray
+{
+    if (!_mutableArray) {
+        _mutableArray = [NSMutableArray array];
+        for (int i = 0; i < 10; i++) {
+            [_mutableArray addObject:@"HFRefresh"];
+        }
+    }
+    
+    return _mutableArray;
 }
 
 - (UICollectionView *)collectionView
@@ -84,9 +119,7 @@ static NSString *cellID = @"cellID";
         _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
-        
         _collectionView.alwaysBounceVertical = YES;
-        
         _collectionView.backgroundColor = [UIColor whiteColor];
         [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellID];
     }
@@ -94,6 +127,7 @@ static NSString *cellID = @"cellID";
     return _collectionView;
 }
 
+#pragma mark - UICollectionViewDataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return 1;
@@ -101,12 +135,11 @@ static NSString *cellID = @"cellID";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 66;
+    return self.mutableArray.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
     
     if (indexPath.row <= 3) {
@@ -118,8 +151,7 @@ static NSString *cellID = @"cellID";
     return cell;
 }
 
-#pragma mark ---- UICollectionViewDelegateFlowLayout
-
+#pragma mark - UICollectionViewDelegateFlowLayout
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return CGSizeMake(80, 80);
@@ -143,8 +175,7 @@ static NSString *cellID = @"cellID";
     return 5.f;
 }
 
-#pragma mark ---- UICollectionViewDelegate
-
+#pragma mark - UICollectionViewDelegate
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
@@ -158,12 +189,12 @@ static NSString *cellID = @"cellID";
 }
 
 //返回这个UICollectionView是否可以被选择
--(BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
 }
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell * cell = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.backgroundColor = [UIColor redColor];

@@ -24,9 +24,9 @@ typedef void(^LoadMoreEventBlock)(void);
 @property (nonatomic, weak) UIScrollView *scrollView;
 
 // 切换控件的状态
-- (void)setLoadMoreStatus:(HFLoadMoreStatus)loadMoreStatus;
+- (void)hf_setLoadMoreStatus:(HFLoadMoreStatus)loadMoreStatus;
 
 // 触发刷新后用于回调scrollView的上拉加载网络请求
-- (void)setLoadMoreEventBlock:(LoadMoreEventBlock)loadMoreblock;
+- (void)hf_setLoadMoreEventBlock:(LoadMoreEventBlock)loadMoreblock;
 
 @end

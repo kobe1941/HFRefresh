@@ -19,7 +19,6 @@ static const NSString *HFRefreshHandlerString;
 
 @end
 
-
 @implementation UIScrollView (HFRefreshPullDown)
 
 #pragma mark - 关联对象和属性
@@ -33,10 +32,14 @@ static const NSString *HFRefreshHandlerString;
     objc_setAssociatedObject(self, &HFRefreshHeaderString, refreshHeader, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-
 #pragma mark - 对外提供的方法
-- (void)addPullDownToRefreshWithHandler:(HFRefreshBLock)refreshBlock
+- (void)hf_addPullDownToRefreshWithHandler:(HFRefreshBLock)refreshBlock
 {
+    if ([self.subviews containsObject:self.refreshHeader]) {
+        NSLog(@"已经添加过下拉刷新控件，不再重复添加------------>>>>>>>>>>>>>>>>>");
+        return;
+    }
+    
     CGFloat originY = -HFRefreshHeaderHeight - self.contentInset.top;
     HFRefreshHeader *header = [[HFRefreshHeader alloc] initWithFrame:CGRectMake(0, originY, self.bounds.size.width, HFRefreshHeaderHeight)];
 //    header.scrollView = self;
@@ -45,22 +48,22 @@ static const NSString *HFRefreshHandlerString;
     [self bringSubviewToFront:header];
     self.refreshHeader = header;
 
-    [header setRefreshEventBlock:^{
+    [header hf_setRefreshEventBlock:^{
         refreshBlock();
     }];
 }
 
-- (void)triggleToReFresh
+- (void)hf_triggleToRefresh
 {
-    [self.refreshHeader triggleToReFresh];
+    [self.refreshHeader hf_triggleToRefresh];
 }
 
-- (void)stopToFresh
+- (void)hf_stopRefresh
 {
-    [self.refreshHeader setRefreshStatus:HFRefreshNormal];
+    [self.refreshHeader hf_setRefreshStatus:HFRefreshNormal];
 }
 
-- (void)resetPullToRefresh
+- (void)hf_resetPullToRefresh
 {
     self.refreshHeader.scrollView = nil;
 }

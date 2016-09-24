@@ -12,6 +12,8 @@
 @interface HFTableViewController ()<UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSMutableArray *mutableArray;
+@property (nonatomic, assign) NSInteger count; // 记录上拉加载更多的次数
 
 @end
 
@@ -26,10 +28,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self.view addSubview:self.tableView];
-    
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
@@ -38,34 +39,56 @@
     // 设置contentInset需要在添加下拉刷新之前
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     
-    // 实际用的时候，这一块可以放到父类的viewDidLoad里去实现
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
     }
     
-    __weak typeof(self) weakSelf = self;
-    [self.tableView addPullDownToRefreshWithHandler:^{
-        NSLog(@"开始下拉刷新啦--------------");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSLog(@"下拉刷新完成------------");
-            [weakSelf.tableView stopToFresh];
-        });
-    }];
-    
-    [self.tableView addLoadMoreForNextPageWithHandler:^{
-        NSLog(@"开始上拉加载更多---------");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf.tableView stopToLoadMore];
-            NSLog(@"上拉加载更多完成---------");
-        });
-    }];
-    
-    [self.tableView triggleToReFresh];
+    [self addPullDownRefresh];
+    [self addLoadMoreRefresh];
+    [self.tableView hf_triggleToRefresh]; // 立即触发下拉刷新
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)addPullDownRefresh
+{
+    __weak typeof(self) weakSelf = self;
+    [self.tableView hf_addPullDownToRefreshWithHandler:^{
+        NSLog(@"开始下拉刷新啦--------------");
+        [weakSelf.mutableArray removeAllObjects];
+        for (int i = 0; i < 10; i++) {
+            [weakSelf.mutableArray addObject:@"HFRefresh"];
+        }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"下拉刷新完成------------");
+            [weakSelf.tableView reloadData];
+            [weakSelf.tableView hf_stopRefresh];
+            [weakSelf addLoadMoreRefresh];
+            weakSelf.count = 0;
+        });
+    }];
+}
+
+- (void)addLoadMoreRefresh
+{
+    __weak typeof(self) weakSelf = self;
+    [self.tableView hf_addLoadMoreForNextPageWithHandler:^{
+        NSLog(@"开始上拉加载更多---------");
+        [weakSelf.mutableArray addObjectsFromArray:[[weakSelf.mutableArray subarrayWithRange:NSMakeRange(0, 5)] copy]];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"上拉加载更多完成---------");
+            weakSelf.count++;
+            if (weakSelf.count >= 3) {
+                [weakSelf.tableView hf_loadMoreNoMore];
+            } else {
+                [weakSelf.tableView hf_stopLoadMore];
+                [weakSelf.tableView reloadData];
+            }
+        });
+    }];
 }
 
 #pragma mark - getter
@@ -82,6 +105,17 @@
     return _tableView;
 }
 
+- (NSMutableArray *)mutableArray
+{
+    if (!_mutableArray) {
+        _mutableArray = [NSMutableArray array];
+        for (int i = 0; i < 10; i++) {
+            [_mutableArray addObject:@"HFRefresh"];
+        }
+    }
+    
+    return _mutableArray;
+}
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -91,7 +125,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 25;
+    return self.mutableArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -116,7 +150,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
 }
 
 @end
