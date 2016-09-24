@@ -7,8 +7,7 @@
 //
 
 #import "HFTableViewController.h"
-#import "UIScrollView+HFRefreshPullDown.h"
-#import "UIScrollView+HFRefreshLoadMore.h"
+#import "HFRefresh.h"
 
 @interface HFTableViewController ()<UITableViewDataSource, UITableViewDelegate>
 

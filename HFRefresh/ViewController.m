@@ -7,10 +7,10 @@
 //
 
 #import "ViewController.h"
-#import "UIScrollView+HFRefreshPullDown.h"
+#import "HFRefresh.h"
 #import "HFTableViewController.h"
 #import "HFCollectionViewController.h"
-#import "UIScrollView+HFRefreshLoadMore.h"
+
 
 @interface ViewController ()<UITableViewDataSource, UITableViewDelegate>
 

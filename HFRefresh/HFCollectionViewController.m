@@ -7,8 +7,7 @@
 //
 
 #import "HFCollectionViewController.h"
-#import "UIScrollView+HFRefreshPullDown.h"
-#import "UIScrollView+HFRefreshLoadMore.h"
+#import "HFRefresh.h"
 
 static NSString *cellID = @"cellID";
 

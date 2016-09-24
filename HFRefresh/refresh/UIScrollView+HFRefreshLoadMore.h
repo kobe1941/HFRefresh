@@ -12,13 +12,13 @@ typedef void(^HFLoadMoreBLock)(void);
 
 @interface UIScrollView (HFRefreshLoadMore)
 
-// 添加下拉刷新
+// 添加上拉加载更多
 - (void)addLoadMoreForNextPageWithHandler:(HFLoadMoreBLock)loadMoreBlock;
 
-// 停止刷新
+// 停止加载
 - (void)stopToLoadMore;
 
 // 用于取消KVO的监听，防止页面返回后造成崩溃
-- (void)resetLoadMoreForNextPage;
+//- (void)resetLoadMoreForNextPage;
 
 @end
