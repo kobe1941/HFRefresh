@@ -40,6 +40,7 @@
 
 
 上下拉一起
+
 ![上下拉一起](/readmeImage/refreshAndLoadMore.gif)
 
 
