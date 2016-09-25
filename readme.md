@@ -1,10 +1,5 @@
 一个简单轻量级上下拉刷新的库。
 
-###主要原理是使用KVO来监听scrollView的offset等属性，使用UIScrollView类别的方式引入到项目中，支持UITableView和UICollectionView。
-
-##没有KVO 崩溃 和循环引用 ！！
-
-##there is no KVO crash and no retain circle!!!
 
 主要接口及使用方式：
 
@@ -32,7 +27,6 @@
 
 ```
 
-####默认的上拉加载会有箭头图片，如果不想要，可以直接注释掉。添加箭头可以更明显的看到控件状态的切换。
 
 ###效果见下图：
 
@@ -44,6 +38,14 @@
 
 ![上下拉一起](/readmeImage/refreshAndLoadMore.gif)
 
+
+####默认的上拉加载会有箭头图片，如果不想要，可以直接注释掉。添加箭头可以更明显的看到控件状态的切换。
+
+###主要原理是使用KVO来监听scrollView的offset等属性，使用UIScrollView类别的方式引入到项目中，支持UITableView和UICollectionView。
+
+##没有KVO 崩溃 和循环引用 ！！
+
+##there is no KVO crash and no retain circle!!!
 
 最近忙着搬家，后续有时间再写篇博客介绍~
 
