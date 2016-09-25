@@ -37,7 +37,7 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     
     // 设置contentInset需要在添加下拉刷新之前
-    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
+//    self.tableView.contentInset = UIEdgeInsetsMake(60, 0, 0, 0);
     
     if ([[[UIDevice currentDevice]systemVersion] floatValue] >= 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeBottom | UIRectEdgeLeft | UIRectEdgeRight;
@@ -59,10 +59,10 @@
     [self.tableView hf_addPullDownToRefreshWithHandler:^{
         NSLog(@"开始下拉刷新啦--------------");
         [weakSelf.mutableArray removeAllObjects];
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 15; i++) {
             [weakSelf.mutableArray addObject:@"HFRefresh"];
         }
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"下拉刷新完成------------");
             [weakSelf.tableView reloadData];
             [weakSelf.tableView hf_stopRefresh];
@@ -78,7 +78,7 @@
     [self.tableView hf_addLoadMoreForNextPageWithHandler:^{
         NSLog(@"开始上拉加载更多---------");
         [weakSelf.mutableArray addObjectsFromArray:[[weakSelf.mutableArray subarrayWithRange:NSMakeRange(0, 5)] copy]];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"上拉加载更多完成---------");
             weakSelf.count++;
             if (weakSelf.count >= 3) {

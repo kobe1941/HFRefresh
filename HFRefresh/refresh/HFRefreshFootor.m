@@ -7,7 +7,7 @@
 //
 
 #import "HFRefreshFootor.h"
-
+#import "UIImage+HFRefresh.h"
 
 const CGFloat HFRefreshFooterHeight = 60;
 const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
@@ -70,8 +70,9 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
 - (UIImageView *)arrowImage
 {
     if (!_arrowImage) {
-        _arrowImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"refreshArrow"]];
+        _arrowImage = [[UIImageView alloc] initWithImage:[UIImage hf_arrowImage]];
     }
+    
     return _arrowImage;
 }
 

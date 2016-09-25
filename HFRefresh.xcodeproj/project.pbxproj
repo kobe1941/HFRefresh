@@ -11,6 +11,8 @@
 		4F4C56D91D9671E20064150C /* HFRefreshHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4C56D31D9671E20064150C /* HFRefreshHeader.m */; };
 		4F4C56DA1D9671E20064150C /* UIScrollView+HFRefreshLoadMore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4C56D51D9671E20064150C /* UIScrollView+HFRefreshLoadMore.m */; };
 		4F4C56DB1D9671E20064150C /* UIScrollView+HFRefreshPullDown.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4C56D71D9671E20064150C /* UIScrollView+HFRefreshPullDown.m */; };
+		4F509C871D97590600F31A6D /* HFRefresh.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4F509C861D97590600F31A6D /* HFRefresh.bundle */; };
+		4F509C8A1D97599C00F31A6D /* UIImage+HFRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F509C891D97599C00F31A6D /* UIImage+HFRefresh.m */; };
 		4F8F69A41D84E85B0084B5C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69A31D84E85B0084B5C2 /* main.m */; };
 		4F8F69A71D84E85B0084B5C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69A61D84E85B0084B5C2 /* AppDelegate.m */; };
 		4F8F69AA1D84E85B0084B5C2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8F69A91D84E85B0084B5C2 /* ViewController.m */; };
@@ -50,6 +52,9 @@
 		4F4C56D51D9671E20064150C /* UIScrollView+HFRefreshLoadMore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+HFRefreshLoadMore.m"; sourceTree = "<group>"; };
 		4F4C56D61D9671E20064150C /* UIScrollView+HFRefreshPullDown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+HFRefreshPullDown.h"; sourceTree = "<group>"; };
 		4F4C56D71D9671E20064150C /* UIScrollView+HFRefreshPullDown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+HFRefreshPullDown.m"; sourceTree = "<group>"; };
+		4F509C861D97590600F31A6D /* HFRefresh.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HFRefresh.bundle; sourceTree = "<group>"; };
+		4F509C881D97599C00F31A6D /* UIImage+HFRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+HFRefresh.h"; sourceTree = "<group>"; };
+		4F509C891D97599C00F31A6D /* UIImage+HFRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+HFRefresh.m"; sourceTree = "<group>"; };
 		4F8F699F1D84E85B0084B5C2 /* HFRefresh.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HFRefresh.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F8F69A31D84E85B0084B5C2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4F8F69A51D84E85B0084B5C2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -100,6 +105,7 @@
 		4F4C56CE1D9671E20064150C /* refresh */ = {
 			isa = PBXGroup;
 			children = (
+				4F509C861D97590600F31A6D /* HFRefresh.bundle */,
 				4F4C56CF1D9671E20064150C /* HFRefresh.h */,
 				4F4C56D21D9671E20064150C /* HFRefreshHeader.h */,
 				4F4C56D31D9671E20064150C /* HFRefreshHeader.m */,
@@ -109,6 +115,8 @@
 				4F4C56D71D9671E20064150C /* UIScrollView+HFRefreshPullDown.m */,
 				4F4C56D41D9671E20064150C /* UIScrollView+HFRefreshLoadMore.h */,
 				4F4C56D51D9671E20064150C /* UIScrollView+HFRefreshLoadMore.m */,
+				4F509C881D97599C00F31A6D /* UIImage+HFRefresh.h */,
+				4F509C891D97599C00F31A6D /* UIImage+HFRefresh.m */,
 			);
 			path = refresh;
 			sourceTree = "<group>";
@@ -285,6 +293,7 @@
 			files = (
 				4F8F69B21D84E85B0084B5C2 /* LaunchScreen.storyboard in Resources */,
 				4F8F69AF1D84E85B0084B5C2 /* Assets.xcassets in Resources */,
+				4F509C871D97590600F31A6D /* HFRefresh.bundle in Resources */,
 				4F8F69AD1D84E85B0084B5C2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -311,6 +320,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F4C56D81D9671E20064150C /* HFRefreshFootor.m in Sources */,
+				4F509C8A1D97599C00F31A6D /* UIImage+HFRefresh.m in Sources */,
 				4F8F69AA1D84E85B0084B5C2 /* ViewController.m in Sources */,
 				4F4C56D91D9671E20064150C /* HFRefreshHeader.m in Sources */,
 				4FD5C5061D8BE43B004DD1C6 /* HFCollectionViewController.m in Sources */,

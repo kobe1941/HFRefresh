@@ -61,7 +61,7 @@
         for (int i = 0; i < 10; i++) {
             [weakSelf.mutableArray addObject:@"HFRefresh"];
         }
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"下拉刷新完成------------");
             [weakSelf.tableView reloadData];
             [weakSelf.tableView hf_stopRefresh];
@@ -79,7 +79,7 @@
     [self.tableView hf_addLoadMoreForNextPageWithHandler:^{
         NSLog(@"开始上拉加载更多---------");
         [weakSelf.mutableArray addObjectsFromArray:[[weakSelf.mutableArray subarrayWithRange:NSMakeRange(0, 5)] copy]];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"上拉加载更多完成---------");
             weakSelf.count++;
             if (weakSelf.count >= 3) {

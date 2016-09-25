@@ -7,6 +7,7 @@
 //
 
 #import "HFRefreshHeader.h"
+#import "UIImage+HFRefresh.h"
 
 const CGFloat HFRefreshHeaderHeight = 60;
 
@@ -67,7 +68,7 @@ const CGFloat HFRefreshHeaderHeight = 60;
 - (UIImageView *)arrowImage
 {
     if (!_arrowImage) {
-        _arrowImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"refreshArrow"]];
+        _arrowImage = [[UIImageView alloc] initWithImage:[UIImage hf_arrowImage]];
     }
     
     return _arrowImage;
