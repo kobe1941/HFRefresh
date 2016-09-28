@@ -14,7 +14,7 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
 
 @interface HFRefreshFootor ()
 
-@property (nonatomic, strong) UIImageView *arrowImage;
+//@property (nonatomic, strong) UIImageView *arrowImage;
 @property (nonatomic, strong) UIActivityIndicatorView *loadMoreIndicator;
 @property (nonatomic, strong) UILabel *textLabel;
 
@@ -45,7 +45,7 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
 
 - (void)hf_setupUI
 {
-    [self addSubview:self.arrowImage];
+//    [self addSubview:self.arrowImage];
     [self addSubview:self.loadMoreIndicator];
     [self addSubview:self.textLabel];
     
@@ -55,26 +55,26 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.textLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:160]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.textLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:24]];
     
-    self.arrowImage.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.arrowImage attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.textLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.arrowImage attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1 constant:60]];
+//    self.arrowImage.translatesAutoresizingMaskIntoConstraints = NO;
+//    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.arrowImage attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.textLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+//    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.arrowImage attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1 constant:60]];
     
     self.loadMoreIndicator.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.loadMoreIndicator attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.loadMoreIndicator attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.arrowImage attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.loadMoreIndicator attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.textLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.loadMoreIndicator attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.textLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:-20]];
     
     [self hf_setLoadMoreStatus:HFLoadMoreNormal];
 }
 
 #pragma mark - getter && setter
-- (UIImageView *)arrowImage
-{
-    if (!_arrowImage) {
-        _arrowImage = [[UIImageView alloc] initWithImage:[UIImage hf_arrowImage]];
-    }
-    
-    return _arrowImage;
-}
+//- (UIImageView *)arrowImage
+//{
+//    if (!_arrowImage) {
+//        _arrowImage = [[UIImageView alloc] initWithImage:[UIImage hf_arrowImage]];
+//    }
+//    
+//    return _arrowImage;
+//}
 
 - (UIActivityIndicatorView *)loadMoreIndicator
 {
@@ -124,11 +124,11 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
         case HFLoadMoreNormal: {
             self.loadMoreIndicator.hidden = YES;
             [self.loadMoreIndicator stopAnimating];
-            self.arrowImage.hidden = NO;
+//            self.arrowImage.hidden = NO;
             // 箭头翻转动画
-            [UIView animateWithDuration:0.2 animations:^{
-                self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI*2);
-            }];
+//            [UIView animateWithDuration:0.2 animations:^{
+//                self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI*2);
+//            }];
             
             self.textLabel.text = @"上拉加载更多";
             UIEdgeInsets insets = self.scrollView.contentInset;
@@ -144,11 +144,11 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
         case HFLoadMoreTriggle: {
             self.loadMoreIndicator.hidden = YES;
             [self.loadMoreIndicator stopAnimating];
-            self.arrowImage.hidden = NO;
+//            self.arrowImage.hidden = NO;
             // 箭头翻转动画
-            [UIView animateWithDuration:0.2 animations:^{
-                self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI);
-            }];
+//            [UIView animateWithDuration:0.2 animations:^{
+//                self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI);
+//            }];
             
             self.textLabel.text = @"释放立即加载";
             break;
@@ -157,8 +157,8 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
         case HFLoadMoreLoading: {
             self.loadMoreIndicator.hidden = NO;
             [self.loadMoreIndicator startAnimating];
-            self.arrowImage.hidden = YES;
-            self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI*2);
+//            self.arrowImage.hidden = YES;
+//            self.arrowImage.transform = CGAffineTransformMakeRotation(M_PI*2);
             self.textLabel.text = @"加载中...";
 
             // 触发下拉刷新的网络请求
