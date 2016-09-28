@@ -64,6 +64,8 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.loadMoreIndicator attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.textLabel attribute:NSLayoutAttributeLeading multiplier:1 constant:-20]];
     
     [self hf_setLoadMoreStatus:HFLoadMoreNormal];
+    
+    [self hf_autoSuitAddLoadMore];
 }
 
 #pragma mark - getter && setter
@@ -200,6 +202,15 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     _scrollView = scrollView;
 }
 
+- (void)hf_autoSuitAddLoadMore
+{
+    if (self.scrollView.contentSize.height < self.scrollView.frame.size.height - HFRefreshFooterHeight) {
+        self.hidden = YES;
+    } else {
+        self.hidden = NO;
+    }
+}
+
 #pragma mark - KVO
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
@@ -218,6 +229,8 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
             tempFrame.origin.y = bottomY;
             
             self.frame = tempFrame;
+            
+            [self hf_autoSuitAddLoadMore];
         }
     }
 }
@@ -228,6 +241,10 @@ const CGFloat HFTriggleFooterThrold = HFRefreshFooterHeight;
     CGFloat contentHeight = self.scrollView.contentSize.height;
     if (contentHeight <= 0) {
         return; // 初始化期间直接返回
+    }
+    
+    if (self.isHidden) {
+        return;
     }
     
     CGFloat fullHeight = offset + scrollHeight;
