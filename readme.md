@@ -60,15 +60,7 @@
 
 ##there is no KVO crash and no retain circle!!!
 
-最近忙着搬家，后续有时间再写篇博客介绍~
 
-###如果你觉得有帮助，且略土豪，请赞助：
-
-
-![](/readmeImage/alipay.jpg)
-
-
-你的支持是我前进的动力，谢谢！
 
 主要参考了`SVPullToRefresh`和`MJRefresh`，向大神们致敬！
 
